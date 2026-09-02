@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Template Ucapan Happy Birthday - Instagram Story</title>
+  
+  <!-- Fonts Google & Cropper CSS -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@700&family=Dancing+Script:wght@700&family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css">
+  
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: #0c0c0e;
+      color: #ffffff;
+      font-family: 'Montserrat', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    /* KONTROL LAYAR */
+    .screen {
+      display: none;
+      width: 100%;
+      max-width: 440px;
+    }
+
+    .screen.active {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* LAYAR 1: STYLING FORM */
+    .form-card {
+      background: #16161a;
+      border: 1px solid #2a2a30;
+      padding: 25px 20px;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+      width: 100%;
+      text-align: center;
+    }
+
+    .main-title {
+      font-size: 1.4rem;
+      color: #fff;
+      margin-bottom: 6px;
+    }
+
+    .sub-title {
+      font-size: 0.8rem;
+      color: #888;
+      margin-bottom: 20px;
+    }
+
+    .input-group {
+      margin-bottom: 15px;
+      text-align: left;
+    }
+
+    .input-group label {
+      display: block;
+      font-size: 0.85rem;
+      margin-bottom: 6px;
+      color: #ddd;
+    }
+
+    .input-group input, .input-group textarea, .input-group select {
+      width: 100%;
+      padding: 10px 12px;
+      background: #09090b;
+      border: 1px solid #333;
+      border-radius: 8px;
+      color: #fff;
+      font-size: 0.85rem;
+      font-family: inherit;
+    }
+
+    .input-group input:focus, .input-group textarea:focus, .input-group select:focus {
+      outline: none;
+      border-color: #d4af37;
+    }
+
+    /* AREA CROPPER FOTO (4:5) */
+    .crop-wrapper {
+      display: none;
+      width: 100%;
+      max-height: 300px;
+      margin-top: 10px;
+      border-radius: 8px;
+      overflow: hidden;
+      background: #000;
+      border: 1px solid #444;
+    }
+
+    .crop-wrapper img {
+      max-width: 100%;
+      display: block;
+    }
+
+    .crop-hint {
+      display: none;
+      font-size: 0.75rem;
+      color: #d4af37;
+      margin-top: 5px;
+      text-align: center;
+    }
+
+    .btn-generate {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(45deg, #d4af37, #f3e5ab);
+      color: #000;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: 10px;
+      transition: 0.2s;
+    }
+
+    .btn-generate:hover {
+      opacity: 0.9;
+    }
+
+    /* LAYAR 2: STYLING KARTU STORY */
+    .story-wrapper {
+      width: 360px;
+      height: 640px;
+      border: 2px solid #282830;
+      border-radius: 20px;
+      padding: 20px 24px 20px 24px;
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.9);
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+      transition: background 0.3s;
+    }
+
+    /* TEMA WARNA LATAR */
+    .theme-dark { background: linear-gradient(135deg, #141418 0%, #09090b 100%); }
+    .theme-gold { background: linear-gradient(135deg, #2c2204 0%, #000000 100%); }
+    .theme-rosegold { background: linear-gradient(135deg, #2b171a 0%, #0d0607 100%); }
+
+    /* ELEMEN DEKORASI BINTANG */
+    .sparkle-star {
+      position: absolute;
+      color: #ffd700;
+      font-size: 1.2rem;
+      animation: blink 2s infinite ease-in-out;
+      pointer-events: none;
+    }
+    .star-1 { top: 25px; left: 25px; }
+    .star-2 { top: 40px; right: 25px; animation-delay: 1s; }
+    .star-3 { bottom: 65px; left: 30px; animation-delay: 0.5s; }
+
+    @keyframes blink {
+      0%, 100% { opacity: 0.3; transform: scale(0.8); }
+      50% { opacity: 1; transform: scale(1.2); }
+    }
+
+    /* ELEMEN HEADER */
+    .header-title {
+      font-family: 'Aref Ruqaa', serif;
+      font-size: 2.1rem;
+      line-height: 0.95;
+      color: #f1faee;
+      text-transform: uppercase;
+      text-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+      margin-top: 10px;
+      margin-bottom: 15px;
+      text-align: center;
+      position: relative;
+      z-index: 2;
+    }
+
+    .header-title span {
+      display: block;
+      font-size: 1.3rem;
+      letter-spacing: 1px;
+    }
+
+    /* BINGKAI FOTO EMAS RASIO 4:5 (UKURAN DIKECILKAN PAS) */
+    .photo-container {
+      position: relative;
+      width: 82%; /* Dikecilkan dari 100% agar proporsional */
+      margin-bottom: 15px;
+    }
+
+    .photo-frame {
+      width: 100%;
+      aspect-ratio: 4 / 5; /* Tetap Rasio 4:5 */
+      border: 3px solid transparent;
+      border-image: linear-gradient(45deg, #d4af37, #fff, #aa771c) 1;
+      border-radius: 12px;
+      overflow: hidden;
+      background-color: #000;
+      box-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
+    }
+
+    .photo-frame img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    /* BADGE SPECIAL DAY */
+    .badge-vip {
+      position: absolute;
+      top: -10px;
+      right: -10px;
+      background: linear-gradient(45deg, #d4af37, #f3e5ab);
+      color: #000;
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 6px 12px;
+      border-radius: 20px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+      z-index: 3;
+    }
+
+    .bday-title {
+      font-family: 'Dancing Script', cursive;
+      font-size: 2.5rem;
+      color: #f1faee;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+    }
+
+    /* CONTAINER AREA PESAN UCAPAN */
+    .wish-container {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+    }
+
+    /* PESAN UCAPAN KUSTOM */
+    .custom-wish {
+      font-size: 0.82rem;
+      color: #d4af37;
+      font-style: italic;
+      text-align: center;
+      max-width: 90%;
+      line-height: 1.3;
+    }
+
+    .card-footer {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px dashed #3a3a40;
+      padding-top: 10px;
+      font-size: 0.78rem;
+      color: #a8dadc;
+    }
+
+    /* TOMBOL AKSI */
+    .action-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      width: 100%;
+      margin-top: 20px;
+    }
+
+    .btn-download {
+      width: 100%;
+      padding: 14px;
+      background: #2a9d8f;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: #888;
+      border: 1px solid #444;
+      padding: 10px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- LAYAR 1: FORM INPUT & EDIT FOTO -->
+  <div id="screen-form" class="screen active">
+    <div class="form-card">
+      <h1 class="main-title">Template Ucapan Birthday</h1>
+      <p class="sub-title">Isi data, atur posisi foto (4:5), & buat story</p>
+
+      <form id="bday-form">
+        <div class="input-group">
+          <label for="input-photo">Pilih Foto Teman:</label>
+          <input type="file" id="input-photo" accept="image/*" required>
+        </div>
+
+        <!-- PRATINJAU & ALAT POTONG FOTO (4:5) -->
+        <div id="crop-wrapper" class="crop-wrapper">
+          <img id="image-to-crop" src="">
+        </div>
+        <p id="crop-hint" class="crop-hint">💡 Geser, perbesar, atau percantik posisi foto sesuai rasio 4:5</p>
+
+        <div class="input-group" style="margin-top: 15px;">
+          <label for="input-ig">Username Instagram:</label>
+          <input type="text" id="input-ig" placeholder="contoh: @nama_ig" required>
+        </div>
+
+        <div class="input-group">
+          <label for="input-date">Tanggal Lahir:</label>
+          <input type="date" id="input-date" required>
+        </div>
+
+        <div class="input-group">
+          <label for="input-wish">Pesan / Doa Singkat:</label>
+          <textarea id="input-wish" rows="2" placeholder="contoh: Wish you all the best & stay awesome!"></textarea>
+        </div>
+
+        <div class="input-group">
+          <label for="input-theme">Pilih Tema Warna Latar:</label>
+          <select id="input-theme">
+            <option value="theme-dark">Dark Luxury (Default)</option>
+            <option value="theme-gold">Golden Royal</option>
+            <option value="theme-rosegold">Rose Gold Elite</option>
+          </select>
+        </div>
+
+        <button type="button" id="btn-create" class="btn-generate">Buat Desain Story ✨</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- LAYAR 2: KARTU STORY -->
+  <div id="screen-result" class="screen">
+    
+    <div id="capture-area" class="story-wrapper theme-dark">
+      <span class="sparkle-star star-1">✦</span>
+      <span class="sparkle-star star-2">✨</span>
+      <span class="sparkle-star star-3">✦</span>
+
+      <h1 class="header-title">
+        ADMIRABLE
+        <span>COMPANY</span>
+      </h1>
+
+      <div class="photo-container">
+        <div class="badge-vip">SPECIAL DAY 🎉</div>
+        <div class="photo-frame">
+          <img id="display-photo" src="" alt="Foto Ulang Tahun">
+        </div>
+      </div>
+
+      <h2 class="bday-title">Happy Birthday</h2>
+      
+      <div class="wish-container">
+        <p class="custom-wish" id="display-wish">Wish you all the best!</p>
+      </div>
+
+      <div class="card-footer">
+        <span class="ig-handle" id="display-ig">@username</span>
+        <span class="birth-date" id="display-date">01 Januari 2000</span>
+      </div>
+    </div>
+
+    <div class="action-buttons">
+      <button id="btn-download" class="btn-download">📥 Unduh Gambar (PNG)</button>
+      <button id="btn-back" class="btn-secondary">← Edit / Buat Baru</button>
+    </div>
+
+  </div>
+
+  <!-- Libraries: html2canvas, JS Confetti, & CropperJS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdn.jsdelivr.com/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+  
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const screenForm = document.getElementById('screen-form');
+      const screenResult = document.getElementById('screen-result');
+      const btnCreate = document.getElementById('btn-create');
+      const btnBack = document.getElementById('btn-back');
+      const btnDownload = document.getElementById('btn-download');
+
+      const inputPhoto = document.getElementById('input-photo');
+      const inputIg = document.getElementById('input-ig');
+      const inputDate = document.getElementById('input-date');
+      const inputWish = document.getElementById('input-wish');
+      const inputTheme = document.getElementById('input-theme');
+
+      const imageToCrop = document.getElementById('image-to-crop');
+      const cropWrapper = document.getElementById('crop-wrapper');
+      const cropHint = document.getElementById('crop-hint');
+
+      const captureArea = document.getElementById('capture-area');
+      const displayPhoto = document.getElementById('display-photo');
+      const displayIg = document.getElementById('display-ig');
+      const displayDate = document.getElementById('display-date');
+      const displayWish = document.getElementById('display-wish');
+
+      let cropper = null;
+
+      // KETIKA PILIH FOTO, INSIALISASI ALAT EDIT/CROP 4:5
+      inputPhoto.addEventListener('change', (e) => {
+        const files = e.target.files;
+        if (files && files.length > 0) {
+          const file = files[0];
+          const reader = new FileReader();
+          reader.onload = (event) => {
+            imageToCrop.src = event.target.result;
+            cropWrapper.style.display = 'block';
+            cropHint.style.display = 'block';
+
+            if (cropper) {
+              cropper.destroy();
+            }
+
+            // Inisialisasi CropperJS dengan rasio 4:5
+            cropper = new Cropper(imageToCrop, {
+              aspectRatio: 4 / 5,
+              viewMode: 1,
+              dragMode: 'move',
+              autoCropArea: 1,
+              restore: false,
+              guides: true,
+              center: true,
+              highlight: false,
+              cropBoxMovable: true,
+              cropBoxResizable: true,
+              toggleDragModeOnDblclick: false,
+            });
+          };
+          reader.readAsDataURL(file);
+        }
+      });
+
+      btnCreate.addEventListener('click', () => {
+        if (!inputPhoto.files || !inputPhoto.files[0]) {
+          alert('Pilih foto terlebih dahulu!');
+          return;
+        }
+        if (!inputIg.value.trim()) {
+          alert('Isi username Instagram!');
+          return;
+        }
+        if (!inputDate.value) {
+          alert('Pilih tanggal lahir!');
+          return;
+        }
+
+        // AMBIL HASIL CROP 4:5 UNTUK DIPASANG DI STORY
+        if (cropper) {
+          const canvas = cropper.getCroppedCanvas({
+            width: 800,
+            height: 1000,
+          });
+          displayPhoto.src = canvas.toDataURL('image/jpeg');
+        }
+
+        let igValue = inputIg.value.trim();
+        displayIg.textContent = igValue.startsWith('@') ? igValue : '@' + igValue;
+
+        const dateObj = new Date(inputDate.value);
+        displayDate.textContent = dateObj.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+
+        displayWish.textContent = inputWish.value.trim() ? `"${inputWish.value.trim()}"` : '';
+        captureArea.className = `story-wrapper ${inputTheme.value}`;
+
+        screenForm.classList.remove('active');
+        screenResult.classList.add('active');
+
+        confetti({
+          particleCount: 70,
+          spread: 60,
+          origin: { y: 0.7 }
+        });
+      });
+
+      btnBack.addEventListener('click', () => {
+        screenResult.classList.remove('active');
+        screenForm.classList.add('active');
+      });
+
+      btnDownload.addEventListener('click', () => {
+        btnDownload.innerText = 'Mengunduh... ⏳';
+        btnDownload.disabled = true;
+
+        html2canvas(captureArea, {
+          scale: 2,
+          useCORS: true,
+          allowTaint: true,
+          backgroundColor: null
+        }).then((canvas) => {
+          const link = document.createElement('a');
+          const username = displayIg.textContent.replace('@', '');
+          link.download = `hbd-${username}-story.png`;
+          link.href = canvas.toDataURL('image/png');
+          link.click();
+
+          btnDownload.innerText = '📥 Unduh Gambar (PNG)';
+          btnDownload.disabled = false;
+        }).catch((err) => {
+          console.error(err);
+          alert('Gagal mengunduh gambar.');
+          btnDownload.innerText = '📥 Unduh Gambar (PNG)';
+          btnDownload.disabled = false;
+        });
+      });
+    });
+  </script>
+</body>
+</html>
